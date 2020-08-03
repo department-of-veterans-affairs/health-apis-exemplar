@@ -1,3 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FindBugsFilter>
+
+  <!-- [ERROR] This use of org/slf4j/Logger.warn(Ljava/lang/String;Ljava/lang/Object;)V might be used to include CRLF characters into log messages [gov.va.api.health.exemplar.Controller] At Controller.java:[line 29] CRLF_INJECTION_LOGS -->
+  <!-- The line in question is accepting an integer from the user, which cannot be a line feed. -->
+  <Match>
+    <Class name="gov.va.api.health.exemplar.Controller"/>
+    <Bug pattern="CRLF_INJECTION_LOGS"/>
+  </Match>
+
+  <!-- [ERROR] gov.va.api.health.exemplar.Controller.goodbye(Integer) invokes System.exit(...), which shuts down the entire virtual machine [gov.va.api.health.exemplar.Controller] At Controller.java:[line 30] DM_EXIT -->
+  <!--
+    The is a test application explicitly designed to allow testers to force the application
+    to shutdown unexpectedly to verify the behavior of orchestration engines, such as kubernetes
+  -->
+  <Match>
+    <Class name="gov.va.api.health.exemplar.Controller"/>
+    <Bug pattern="DM_EXIT"/>
+  </Match>
+
 </FindBugsFilter>
