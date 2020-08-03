@@ -11,8 +11,7 @@
   <artifactId>exemplar</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>jar</packaging>
-  <properties>
-  </properties>
+  <properties/>
   <dependencies>
     <dependency>
       <groupId>gov.va.api.health</groupId>
