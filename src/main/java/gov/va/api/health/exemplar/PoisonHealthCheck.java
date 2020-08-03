@@ -6,15 +6,15 @@ import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserControlledHealthCheck implements HealthIndicator {
+public class PoisonHealthCheck implements HealthIndicator {
 
-  static final AtomicBoolean HEALTHY = new AtomicBoolean(true);
+  static final AtomicBoolean POISONED = new AtomicBoolean(false);
 
   @Override
   public Health health() {
-    if (HEALTHY.get()) {
-      return Health.up().build();
+    if (POISONED.get()) {
+      return Health.down().build();
     }
-    return Health.down().build();
+    return Health.up().build();
   }
 }

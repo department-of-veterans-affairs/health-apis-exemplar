@@ -7,36 +7,44 @@ It provides a simple rest application with following endpoints
 - `/actuator/health`  
   Health checks
 
-- `/hello` or `/hello/{greeting}`  
-  Say hello and return some useful information
+- `/hello` or `/hello/{status}`  
+  Say hello and return some useful information. 
+  The HTTP status code can be provided. If omitted, 200 will be used.
 
-- `/goodbye` or `/goodbye/{number}`  
+- `/goodbye` or `/goodbye/{exitCode}`  
   Force the application to abruptly exit, useful for testing crash behavior.
-  If `number` is provided, it will be application exit code.
+  If `exitCode` is provided, it will be application exit code, 
+  otherwise 0 will be used.
 
 - `/poison` and `/heal`
-  Force the health checks to report UP or DOWN.
+  Poison the application, forcing the health checks to report UP or DOWN.
 
 ## Usage
 
 Say hello.
 ```
 curl http://exemplar.com/hello
-curl http://exemplar.com/hello/howdy
+```
+Say hello with 400 status code.
+```
+curl http://exemplar.com/hello/400
 ```
 
 Say goodbye.
 ```
 curl -XPOST http://exemplar.com/goodbye
+```
+Say goodbye and exit with status 1.
+```
 curl -XPOST http://exemplar.com/goodbye/1
 ```
 
-Force application to be unhealthy
+Force application to be unhealthy.
 ```
 curl -XPOST http://exemplar.com/poison
 ```
 
-Force application to be healthy
+Force application to be healthy.
 ```
 curl -XPOST http://exemplar.com/heal
 ```
@@ -46,9 +54,10 @@ curl -XPOST http://exemplar.com/heal
 {
   "hostname": "Bryans-MacBook-Pro.local", // The application hostname
   "instance": 488928549,                  // A unique application instance id
+  "poisoned": false                       // Indicates whether the app is poisoned
   "time": "2020-08-03T18:56:21.170030Z",  // The request time
   "requestCount": 5,                      // Cumulative request count for the instance
-  "greeting": "hello",                    // The supplied greeting or 'hello'
+  "status": 200,                          // The supplied status code or 200
   "headers": {                            // Any specified request headers
     "host": [
       "localhost:8080"

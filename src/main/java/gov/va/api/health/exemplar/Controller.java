@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.SneakyThrows;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,27 +32,33 @@ public class Controller {
 
   @PostMapping({"/heal"})
   void heal() {
-    UserControlledHealthCheck.HEALTHY.set(true);
+    PoisonHealthCheck.POISONED.set(false);
   }
 
-  @GetMapping({"/hello", "/hello/{greeting}"})
+  @GetMapping({"/hello", "/hello/{status}"})
   @SneakyThrows
-  Greeting hello(
+  ResponseEntity<Greeting> hello(
       @RequestHeader MultiValueMap<String, String> headers,
-      @PathVariable(required = false, name = "greeting") String greeting) {
-    return Greeting.builder()
-        .instance(INSTANCE_ID)
-        .requestCount(REQUEST_COUNT.incrementAndGet())
-        .time(Instant.now())
-        .hostname(Inet4Address.getLocalHost().getHostName())
-        .headers(headers)
-        .greeting(greeting == null ? "hello" : greeting)
-        .build();
+      @PathVariable(required = false, name = "status") Integer status) {
+    if (status == null) {
+      status = 200;
+    }
+    var greeting =
+        Greeting.builder()
+            .instance(INSTANCE_ID)
+            .requestCount(REQUEST_COUNT.incrementAndGet())
+            .poisoned(PoisonHealthCheck.POISONED.get())
+            .time(Instant.now())
+            .hostname(Inet4Address.getLocalHost().getHostName())
+            .headers(headers)
+            .status(status)
+            .build();
+    return ResponseEntity.status(status).body(greeting);
   }
 
   @PostMapping({"/poison"})
   void poison() {
-    UserControlledHealthCheck.HEALTHY.set(false);
+    PoisonHealthCheck.POISONED.set(true);
   }
 
   @Value
@@ -62,6 +69,7 @@ public class Controller {
     int instance;
     int requestCount;
     MultiValueMap<String, String> headers;
-    String greeting;
+    int status;
+    boolean poisoned;
   }
 }
