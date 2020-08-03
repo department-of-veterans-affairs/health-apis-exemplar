@@ -29,6 +29,11 @@ public class Controller {
     System.exit(exit == null ? 0 : exit);
   }
 
+  @PostMapping({"/heal"})
+  void heal() {
+    UserControlledHealthCheck.HEALTHY.set(true);
+  }
+
   @GetMapping({"/hello", "/hello/{greeting}"})
   @SneakyThrows
   Greeting hello(
@@ -42,6 +47,11 @@ public class Controller {
         .headers(headers)
         .greeting(greeting == null ? "hello" : greeting)
         .build();
+  }
+
+  @PostMapping({"/poison"})
+  void poison() {
+    UserControlledHealthCheck.HEALTHY.set(false);
   }
 
   @Value
