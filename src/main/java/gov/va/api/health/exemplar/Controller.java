@@ -30,10 +30,24 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 public class Controller {
 
-  private static final int INSTANCE_ID = new Object().hashCode();
+  private static final String INSTANCE_ID = instanceId();
   private static final AtomicInteger REQUEST_COUNT = new AtomicInteger(0);
 
   private static final List<double[]> WASTED_SPACE = new CopyOnWriteArrayList<>();
+
+  @SneakyThrows
+  private static String instanceId() {
+    SecureRandom random = new SecureRandom();
+
+    byte[] address = Inet4Address.getLocalHost().getAddress();
+    String id =
+        String.format(
+                "%2H%2H%2H%2H%2H",
+                address[0], address[1], address[2], address[3], random.nextInt(1000))
+            .replace(' ', '0');
+    log.info("Instance {}", id);
+    return id;
+  }
 
   @PostMapping({"/busy", "/busy/{seconds}"})
   long busy(@PathVariable(name = "seconds", required = false) @Min(1) @Max(300) Integer seconds) {
@@ -130,7 +144,7 @@ public class Controller {
   public static class Greeting {
     Instant time;
     String hostname;
-    int instance;
+    String instance;
     int requestCount;
     MultiValueMap<String, String> headers;
     int status;
