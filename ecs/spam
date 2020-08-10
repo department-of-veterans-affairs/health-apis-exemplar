@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+delay="${1:-0.5s}"
+
+for i in $(seq 10000)
+do
+  printf "%05d %s " $i "$(date +%T)"
+  curl -s http://green.qa.lighthouse.va.gov:8080/hello \
+    | jq '[.requestCount,.poisoned,.instance,.hostname]|join("\t")' -r
+  sleep $delay
+done | tee x
