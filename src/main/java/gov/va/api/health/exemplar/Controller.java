@@ -15,6 +15,7 @@ import lombok.SneakyThrows;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,10 +31,10 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 public class Controller {
 
-  private static final String INSTANCE_ID = instanceId();
-  private static final AtomicInteger REQUEST_COUNT = new AtomicInteger(0);
+  static final String INSTANCE_ID = instanceId();
+  static final AtomicInteger REQUEST_COUNT = new AtomicInteger(0);
 
-  private static final List<double[]> WASTED_SPACE = new CopyOnWriteArrayList<>();
+  static final List<double[]> WASTED_SPACE = new CopyOnWriteArrayList<>();
 
   @SneakyThrows
   private static String instanceId() {
@@ -103,7 +104,7 @@ public class Controller {
             .wastedSpace(WASTED_SPACE.size())
             .time(Instant.now())
             .hostname(Inet4Address.getLocalHost().getHostName())
-            .headers(headers)
+            .headers(headers == null ? null : new LinkedMultiValueMap<>(headers))
             .status(status)
             .build();
     return ResponseEntity.status(status).body(greeting);
@@ -146,7 +147,9 @@ public class Controller {
     String hostname;
     String instance;
     int requestCount;
-    MultiValueMap<String, String> headers;
+
+    LinkedMultiValueMap<String, String> headers;
+
     int status;
     boolean poisoned;
     int wastedSpace;
