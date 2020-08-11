@@ -1,0 +1,15 @@
+version: '3'
+services:
+  exemplar:
+    image: $ECR/health-apis-exemplar:$EXEMPLAR_VERSION
+    ports:
+      - "8080:8080"
+    environment:
+      FAVORITE_FOOD: taco
+    logging:
+      driver: awslogs
+      options:
+        awslogs-group: exemplar
+        awslogs-region: us-gov-west-1
+        awslogs-stream-prefix: exemplar
+

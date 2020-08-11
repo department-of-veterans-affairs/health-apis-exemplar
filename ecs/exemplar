@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+set -euo pipefail
+EXEMPLAR_URL="http://green.qa.lighthouse.va.gov:8080"
+
+
+hello() {
+  curl -s ${EXEMPLAR_URL}/hello | jq .
+}
+
+busy() {
+  local seconds="${1:-10}"
+  local repeat="${2:-1}"
+  local parallel="${3:-10}"
+  seq $repeat | xargs -P $parallel -n 1 -I{} curl -w " {}\n" -sXPOST ${EXEMPLAR_URL}/busy/${1:-10}
+}
+
+
+
+main() {
+  if [ $# == 0 ]; then hello; return; fi
+  COMMAND=$1
+  shift
+  $COMMAND "$@"
+}
+
+main "$@"

@@ -1,0 +1,29 @@
+version: 1
+task_definition:
+  task_execution_role: $TASK_EXECUTION_ROLE
+  ecs_network_mode: awsvpc
+  task_size:
+    cpu_limit: 1024
+    mem_limit: 2GB
+  services:
+    exemplar:
+      secrets:
+      - name: SECRET_VALUE
+        value_from: $AWS_SECRET_NAME
+      cpu_shares: 1024
+      mem_limit: 2GB
+      healthcheck:
+        test: [ "CMD-SHELL", "curl -f http://localhost:8080/actuator/health || exit 1" ]
+        interval: 5
+        timeout: 2
+        retries: 3
+        start_period: 45s
+run_params:
+  network_configuration:
+    awsvpc_configuration:
+      subnets:
+        - "$SUBNET_1" 
+        - "$SUBNET_2"
+      security_groups:
+        - "$SECURITY_GROUP"
+      assign_public_ip: ENABLED
