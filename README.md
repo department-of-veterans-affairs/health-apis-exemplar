@@ -31,6 +31,7 @@ It provides a simple rest application with following endpoints
    If `megabytes` is not specified, approximately 1MB will be consumed.
    Freeing release all consumed memory.
 
+
 ## Usage
 
 Say hello.
