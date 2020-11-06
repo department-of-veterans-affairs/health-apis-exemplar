@@ -19,7 +19,7 @@ It provides a simple rest application with following endpoints
 
 - `/poison` and `/heal`  
   Poison the application, forcing the health checks to report UP or DOWN.
-  
+
 - `/busy` or `/busy/{seconds}`  
    Consume a thread for a period of seconds before responding.
    If `seconds` is not specified, the request will take 10 seconds to respond.
