@@ -9,6 +9,7 @@ class PathRewriteConfigTest {
   @Test
   void beanHandlesExemplar() {
     var filter = new PathRewriteConfig().patientRegistrationFilter().getFilter();
-    assertThat(filter.removeLeadingPathsAsUrlPatterns()).containsExactlyInAnyOrder("/exemplar/*");
+    assertThat(filter.removeLeadingPathsAsUrlPatterns())
+        .containsExactlyInAnyOrder("/exemplar/*", "/ex/*");
   }
 }
